@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>인디 미니 게임 팩</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent: #3b82f6;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        p.subtitle {
+            color: var(--text-muted);
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            max-width: 1000px;
+            width: 100%;
+        }
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid #334155;
+            transition: transform 0.2s, border-color 0.2s;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+        }
+        .card h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .card p {
+            margin: 0 0 20px 0;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        .card .btn {
+            background-color: var(--accent);
+            color: white;
+            text-align: center;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <h1>🕹️ 아케이드 웹 게임 팩</h1>
+    <p class="subtitle">한 페이지로 즐기는 독특하고 중독성 넘치는 미니 게임 6종</p>
+    
+    <div class="grid">
+        <a href="game1.html" class="card">
+            <div>
+                <h3>⏱️ 눈감고 7.00초 점프</h3>
+                <p>3초 뒤 숫자가 사라집니다. 오직 내부 감각만으로 정확히 7초가 되는 순간 멈추세요!</p>
+            </div>
+            <div class="btn">플레이 하기</div>
+        </a>
+        <a href="game2.html" class="card">
+            <div>
+                <h3>👁️ 카멜레온 스파이 찾기</h3>
+                <p>수많은 타일 중 미세하게 색상이 다른 단 하나의 타일을 제한 시간 내에 찾아내세요.</p>
+            </div>
+            <div class="btn">플레이 하기</div>
+        </a>
+        <a href="game3.html" class="card">
+            <div>
+                <h3>⚡ 타이밍 리듬 브레이커</h3>
+                <p>움직이는 포인터가 정확히 크리티컬 존에 겹치는 순간을 격파하여 콤보를 이어가세요.</p>
+            </div>
+            <div class="btn">플레이 하기</div>
+        </a>
+        <a href="game4.html" class="card">
+            <div>
+                <h3>☄️ 마우스 탄막 회피령</h3>
+                <p>사방에서 날아오는 불규칙한 탄막을 마우스 커서로 정교하게 피해 생존하세요.</p>
+            </div>
+            <div class="btn">플레이 하기</div>
+        </a>
+        <a href="game5.html" class="card">
+            <div>
+                <h3>🧠 스트룹 뇌 정지 제어기</h3>
+                <p>단어의 의미가 아닌, 글자 고유의 '색상'을 이성적으로 빠르게 골라내는 인지 게임.</p>
+            </div>
+            <div class="btn">플레이 하기</div>
+        </a>
+        <a href="game6.html" class="card">
+            <div>
+                <h3>🚀 중력 반전 러너</h3>
+                <p>화면을 클릭할 때마다 중력이 반전됩니다! 천장과 바닥을 오가며 장애물을 피하세요.</p>
+            </div>
+            <div class="btn">플레이 하기</div>
+        </a>
+    </div>
+</body>
+</html>
