@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏔️ Vu Van Hoan - Game & Music Universe</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent: #3b82f6;
+            --success: #10b981;
+            --danger: #ef4444;
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+            overflow-x: hidden;
+        }
+        
+        /* 산 이미지 배경 */
+        .mountain-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -2;
+            background: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.9)), 
+                        url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1920&auto=format&fit=crop&q=80') no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        /* Equalizer Animation */
+        .eq-bar {
+            width: 3px;
+            background-color: #a855f7;
+            border-radius: 2px;
+            animation: bounce 1s infinite alternate ease-in-out;
+        }
+        .eq-bar:nth-child(1) { height: 14px; animation-delay: 0.1s; }
+        .eq-bar:nth-child(2) { height: 20px; animation-delay: 0.3s; }
+        .eq-bar:nth-child(3) { height: 10px; animation-delay: 0.2s; }
+        .eq-bar:nth-child(4) { height: 18px; animation-delay: 0.4s; }
+
+        @keyframes bounce {
+            0% { transform: scaleY(0.3); }
+            100% { transform: scaleY(1.1); }
+        }
+
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+        .game-card {
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s, border-color 0.2s;
+            cursor: pointer;
+        }
+        .game-card:hover {
+            transform: translateY(-4px);
+            border-color: #3b82f6;
+        }
+    
+        /* Decorative polish: layered aurora, fine grain, and restrained card highlights. */
+        body { position: relative; isolation: isolate; }
+        body::before, body::after { content: ""; position: fixed; inset: auto; pointer-events: none; z-index: -1; border-radius: 999px; filter: blur(2px); }
+        body::before { width: min(58vw, 760px); height: min(58vw, 760px); top: -28vh; right: -18vw; background: radial-gradient(circle, rgba(59,130,246,.22) 0%, rgba(124,58,237,.11) 38%, transparent 72%); }
+        body::after { width: min(52vw, 680px); height: min(52vw, 680px); bottom: -30vh; left: -20vw; background: radial-gradient(circle, rgba(14,165,233,.16) 0%, rgba(168,85,247,.08) 42%, transparent 72%); }
+        .mountain-bg { background-image: linear-gradient(180deg, rgba(7,12,27,.58), rgba(10,15,32,.82) 58%, #0f172a 100%), radial-gradient(ellipse at 50% 0%, rgba(59,130,246,.18), transparent 54%), url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1920&auto=format&fit=crop&q=80'); }
+        .glass-card { position: relative; overflow: hidden; background: linear-gradient(145deg, rgba(30,41,59,.78), rgba(15,23,42,.68)); border-color: rgba(203,213,225,.16); box-shadow: 0 18px 55px rgba(2,6,23,.34), inset 0 1px 0 rgba(255,255,255,.08); }
+        .glass-card::before { content: ""; position: absolute; inset: 0 0 auto; height: 1px; background: linear-gradient(90deg, transparent, rgba(147,197,253,.65), rgba(196,181,253,.5), transparent); opacity: .8; pointer-events: none; }
+        #lobby > .glass-card { background: radial-gradient(ellipse at 88% 5%, rgba(124,58,237,.17), transparent 38%), linear-gradient(135deg, rgba(30,41,59,.88), rgba(15,23,42,.72)); }
+        .game-card { isolation: isolate; min-height: 126px; }
+        .game-card::after { content: ""; position: absolute; width: 110px; height: 110px; right: -34px; bottom: -58px; border-radius: 50%; background: radial-gradient(circle, rgba(59,130,246,.24), transparent 70%); opacity: .55; z-index: -1; transition: transform .35s ease, opacity .35s ease; }
+        .game-card:hover { transform: translateY(-5px); border-color: rgba(96,165,250,.72); box-shadow: 0 16px 34px rgba(2,6,23,.3), 0 0 25px rgba(59,130,246,.1); }
+        .game-card:hover::after { transform: scale(1.45); opacity: .9; }
+        .eq-bar { background: linear-gradient(180deg, #e879f9, #8b5cf6); box-shadow: 0 0 10px rgba(192,132,252,.5); transform-origin: bottom; }
+        #suno-iframe { display: block; }
+        @media (prefers-reduced-motion: reduce) { .eq-bar { animation: none; } .game-card, .game-card::after { transition: none; } }</style>
+</head>
+<body>
+
+    <!-- 배경 산 이미지 -->
+    <div class="mountain-bg"></div>
+
+    <!-- 상단 헤더 -->
+    <header class="w-full max-w-6xl mx-auto p-4 flex justify-between items-center z-10">
+        <div class="flex items-center gap-3 cursor-pointer" onclick="goLobby()">
+            <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center shadow-lg">
+                <i class="fa-solid fa-mountain text-white text-lg"></i>
+            </div>
+            <div>
+                <h1 class="font-bold text-lg tracking-tight text-white">Vu Van Hoan World</h1>
+                <p class="text-xs text-blue-300 font-medium">게임 & 음악 통합 플레이그라운드</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- 메인 컨테이너 (좌측: 게임 영역 / 우측: 음악 플레이어 고정 패널) -->
+    <main class="w-full max-w-6xl mx-auto px-2 py-4 grid grid-cols-1 lg:grid-cols-12 gap-6 z-10 flex-grow">
+        
+        <!-- 왼쪽 메인 컨텐츠 영역 (로비 또는 게임 실행화면) (8칸) -->
+        <div class="lg:col-span-8 flex flex-col">
+            
+            <!-- 로비 화면 -->
+            <div id="lobby" class="w-full">
+                <div class="glass-card rounded-3xl p-6 mb-6">
+                    <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-blue-500/20 text-blue-300 border border-blue-500/30 mb-3">
+                        <span class="w-2 h-2 rounded-full bg-blue-400 animate-ping"></span>
+                        환영합니다!
+                    </span>
+                    <h2 class="text-2xl md:text-3xl font-extrabold tracking-tight mb-2 text-white">
+                        음악을 들으며 즐기는 미니게임 아케이드
+                    </h2>
+                    <p class="text-slate-300 text-xs md:text-sm leading-relaxed">
+                        오른쪽(또는 하단)의 Suno AI 음악 플레이어로 사운드트랙을 재생한 상태에서 원하는 게임을 선택해 플레이하세요[cite: 8]!
+                    </p>
+                </div>
+
+                <h3 class="text-base font-bold text-white mb-3">🕹️ 미니게임 목록</h3>
+                <div class="game-grid">
+                    <div class="game-card glass-card" onclick="loadGame(1)">
+                        <div>
+                            <h4 class="font-bold text-white text-sm">⏱️ 눈감고 7.00초 점프</h4>
+                            <p class="text-xs text-slate-400 mt-1">정확히 7.00초에 멈추기[cite: 1]</p>
+                        </div>
+                        <div class="mt-3 bg-blue-600/80 hover:bg-blue-600 text-white font-bold py-1.5 rounded-lg text-center text-xs transition-colors">플레이</div>
+                    </div>
+                    
+                    <div class="game-card glass-card" onclick="loadGame(2)">
+                        <div>
+                            <h4 class="font-bold text-white text-sm">👁️ 카멜레온 스파이</h4>
+                            <p class="text-xs text-slate-400 mt-1">다른 색상 타일 찾기[cite: 2]</p>
+                        </div>
+                        <div class="mt-3 bg-blue-600/80 hover:bg-blue-600 text-white font-bold py-1.5 rounded-lg text-center text-xs transition-colors">플레이</div>
+                    </div>
+
+                    <div class="game-card glass-card" onclick="loadGame(3)">
+                        <div>
+                            <h4 class="font-bold text-white text-sm">⚡ 리듬 브레이커</h4>
+                            <p class="text-xs text-slate-400 mt-1">크리티컬 존 타이밍 맞추기[cite: 3]</p>
+                        </div>
+                        <div class="mt-3 bg-blue-600/80 hover:bg-blue-600 text-white font-bold py-1.5 rounded-lg text-center text-xs transition-colors">플레이</div>
+                    </div>
+
+                    <div class="game-card glass-card" onclick="loadGame(4)">
+                        <div>
+                            <h4 class="font-bold text-white text-sm">☄️ 마우스 탄막 회피</h4>
+                            <p class="text-xs text-slate-400 mt-1">사방에서 오는 구체 피하기[cite: 4]</p>
+                        </div>
+                        <div class="mt-3 bg-blue-600/80 hover:bg-blue-600 text-white font-bold py-1.5 rounded-lg text-center text-xs transition-colors">플레이</div>
+                    </div>
+
+                    <div class="game-card glass-card" onclick="loadGame(5)">
+                        <div>
+                            <h4 class="font-bold text-white text-sm">🧠 스트룹 뇌 정지</h4>
+                            <p class="text-xs text-slate-400 mt-1">실제 폰트 색상 맞추기[cite: 5]</p>
+                        </div>
+                        <div class="mt-3 bg-blue-600/80 hover:bg-blue-600 text-white font-bold py-1.5 rounded-lg text-center text-xs transition-colors">플레이</div>
+                    </div>
+
+                    <div class="game-card glass-card" onclick="loadGame(6)">
+                        <div>
+                            <h4 class="font-bold text-white text-sm">🚀 중력 반전 러너</h4>
+                            <p class="text-xs text-slate-400 mt-1">상하 반전으로 장애물 피하기[cite: 6]</p>
+                        </div>
+                        <div class="mt-3 bg-blue-600/80 hover:bg-blue-600 text-white font-bold py-1.5 rounded-lg text-center text-xs transition-colors">플레이</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 개별 게임 플레이 뷰어 -->
+            <div id="game-view-container" class="w-full flex-col items-center" style="display: none;">
+                <button onclick="goLobby()" class="glass-card text-slate-300 hover:text-white px-4 py-2 rounded-xl text-xs mb-4 self-start flex items-center gap-2">
+                    <i class="fa-solid fa-arrow-left"></i> 게임 목록으로
+                </button>
+                <div class="glass-card rounded-3xl p-6 w-full text-center" id="game-slot">
+                    <!-- 게임 동적 로드 -->
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 오른쪽 Suno 음악 플레이어 고정 패널 (4칸) -->
+        <div class="lg:col-span-4">
+            <div class="glass-card rounded-3xl p-5 sticky top-4 border border-purple-500/30 shadow-2xl">
+                <div class="flex items-center justify-between mb-3 pb-2 border-b border-white/10">
+                    <div class="flex items-center gap-2">
+                        <div class="flex items-end gap-1 h-4 px-1">
+                            <div class="eq-bar"></div>
+                            <div class="eq-bar"></div>
+                            <div class="eq-bar"></div>
+                            <div class="eq-bar"></div>
+                        </div>
+                        <h3 class="font-bold text-white text-xs uppercase tracking-wider">Suno AI 음악 플레이어</h3>
+                    </div>
+                    <span id="active-track-label" class="text-[10px] font-medium text-purple-300 bg-purple-500/20 px-2 py-0.5 rounded-full">Track 1/3</span>
+                </div>
+
+                <!-- Iframe Embed Container -->
+                <div class="relative w-full rounded-2xl overflow-hidden bg-black/40 min-h-[300px] mb-3">
+                    <iframe id="suno-iframe" src="https://suno.com/embed/QSWPqjLzkIMwc9UP" class="w-full h-[300px] border-0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+                </div>
+
+                <!-- 트랙 선택 버튼들 -->
+                <div class="grid grid-cols-3 gap-2">
+                    <button onclick="selectTrack(0, 'QSWPqjLzkIMwc9UP')" id="t-btn-0" class="p-2 rounded-xl bg-purple-600/50 border border-purple-500/50 text-[11px] font-bold text-white transition-all">Track 1</button>
+                    <button onclick="selectTrack(1, 'sjyZV2AxcMsBM8mH')" id="t-btn-1" class="p-2 rounded-xl bg-white/5 border border-white/10 text-[11px] font-bold text-slate-300 hover:bg-white/10 transition-all">Track 2</button>
+                    <button onclick="selectTrack(2, '0m24FttD4XgkgTVu')" id="t-btn-2" class="p-2 rounded-xl bg-white/5 border border-white/10 text-[11px] font-bold text-slate-300 hover:bg-white/10 transition-all">Track 3</button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- 푸터 -->
+    <footer class="w-full max-w-6xl mx-auto p-4 text-center z-10 text-xs text-slate-400">
+        <p>© 2026 Vu Van Hoan Portfolio. 게임과 음악을 동시에 즐기세요!</p>
+    </footer>
+
+<script>
+    /* --- 음악 플레이어 제어 로직 --- */
+    function selectTrack(index, id) {
+        document.getElementById('suno-iframe').src = `https://suno.com/embed/${id}`;
+        document.getElementById('active-track-label').innerText = `Track ${index + 1}/3`;
+
+        for(let i=0; i<3; i++) {
+            const btn = document.getElementById(`t-btn-${i}`);
+            if(i === index) {
+                btn.className = "p-2 rounded-xl bg-purple-600/50 border border-purple-500/50 text-[11px] font-bold text-white transition-all";
+            } else {
+                btn.className = "p-2 rounded-xl bg-white/5 border border-white/10 text-[11px] font-bold text-slate-300 hover:bg-white/10 transition-all";
+            }
+        }
+    }
+
+
+    /* --- 게임 아케이드 로직 통합 --- */
+    const gameTemplates = {
+        1: `
+            <h3 class="font-bold text-lg mb-1">⏱️ 눈감고 7.00초 점프</h3>
+            <p class="text-slate-400 text-xs mb-4">시작 후 3초 뒤 타이머가 가려집니다. 정확히 <b>7.00초</b>에 멈추세요! (오차 ±0.15초)[cite: 1]</p>
+            <div class="bg-slate-900 p-2.5 rounded-lg flex justify-around mb-3 text-xs">
+                <div>기록: <span id="current">0.00초</span></div>
+                <div>최고 오차: <span id="best" class="text-blue-400 font-bold">-</span></div>
+            </div>
+            <div id="display" class="text-4xl font-bold font-mono my-6">0.00</div>
+            <button id="actionBtn" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 px-6 rounded-xl w-full text-sm">시작</button>
+            <div id="result" class="mt-3 font-bold text-sm"></div>
+        `,
+        2: `
+            <h3 class="font-bold text-lg mb-1">👁️ 카멜레온 스파이 찾기</h3>
+            <p class="text-slate-400 text-xs mb-3">제한 시간 15초 내에 다른 색상인 스파이 타일을 클릭하세요![cite: 2]</p>
+            <div class="bg-slate-900 p-2.5 rounded-lg flex justify-around mb-3 text-xs">
+                <div>라운드: <span id="currentScore" class="text-blue-400 font-bold">1</span></div>
+                <div>시간: <span id="timer" class="text-red-400 font-bold">15.0s</span></div>
+                <div>최고: <span id="bestScore">-</span></div>
+            </div>
+            <div id="grid" style="display: grid; gap: 4px; width: 240px; height: 240px; margin: 0 auto; background:#0f172a; padding:6px; border-radius:10px;"></div>
+            <button id="startBtn" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 px-6 rounded-xl w-full mt-3 text-sm">게임 시작</button>
+        `,
+        3: `
+            <h3 class="font-bold text-lg mb-1">⚡ 타이밍 리듬 브레이커</h3>
+            <p class="text-slate-400 text-xs mb-3">왕복하는 바늘이 <span class="text-emerald-400 font-bold">초록색 존</span>에 올 때 클릭하세요![cite: 3]</p>
+            <div class="bg-slate-900 p-2.5 rounded-lg flex justify-around mb-3 text-xs">
+                <div>콤보: <span id="combo" class="text-blue-400 font-bold">0</span></div>
+                <div>최고: <span id="bestCombo">-</span></div>
+            </div>
+            <div id="barContainer" style="width:100%; height:26px; background:#0f172a; border-radius:13px; position:relative; margin:25px 0; overflow:hidden; border:1px solid #334155;">
+                <div id="targetZone" style="position:absolute; height:100%; background:#10b981; width:35px; left:120px;"></div>
+                <div id="pointer" style="position:absolute; height:100%; width:5px; background:#ffffff; left:0;"></div>
+            </div>
+            <button id="hitBtn" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 px-6 rounded-xl w-full text-sm">HIT! (Space)</button>
+            <div id="status" class="mt-3 font-bold h-5 text-sm"></div>
+        `,
+        4: `
+            <h3 class="font-bold text-lg mb-1">☄️ 마우스 탄막 회피령</h3>
+            <p class="text-slate-400 text-xs mb-3">녹색 영역에 마우스를 올리고 사방에서 오는 구체를 피하세요![cite: 4]</p>
+            <div class="bg-slate-900 p-2.5 rounded-lg flex justify-around mb-3 text-xs">
+                <div>생존: <span id="liveTime" class="text-blue-400 font-bold">0.0초</span></div>
+                <div>최고: <span id="bestTime">-</span></div>
+            </div>
+            <div id="gameBox" style="width:100%; height:260px; background:#0f172a; border-radius:10px; position:relative; overflow:hidden; border: 2px dashed #475569; cursor:none;">
+                <div id="startArea" style="position:absolute; width:45px; height:45px; background:rgba(16,185,129,0.3); border:2px solid #10b981; border-radius:50%; left:50%; top:50%; transform:translate(-50%,-50%); display:flex; align-items:center; justify-content:center; font-size:0.7rem; font-weight:bold; color:#fff;">대기</div>
+                <div id="player" style="position:absolute; width:10px; height:10px; background:#3b82f6; border-radius:50%; pointer-events:none; display:none; transform:translate(-50%,-50%);"></div>
+            </div>
+        `,
+        5: `
+            <h3 class="font-bold text-lg mb-1">🧠 스트룹 뇌 정지 제어기</h3>
+            <p class="text-slate-400 text-xs mb-3">글자 의미가 아닌 <b>실제 폰트 색상</b> 버튼을 누르세요![cite: 5]</p>
+            <div class="bg-slate-900 p-2.5 rounded-lg flex justify-around mb-3 text-xs">
+                <div>점수: <span id="currentScore" class="text-blue-400 font-bold">0</span></div>
+                <div>시간: <span id="timer" class="text-red-400 font-bold">10.0s</span></div>
+                <div>최고: <span id="bestScore">-</span></div>
+            </div>
+            <div id="wordDisplay" class="text-3xl font-bold my-4 h-12 flex items-center justify-center">준비</div>
+            <div class="grid grid-cols-2 gap-2">
+                <button class="bg-red-500 text-white font-bold py-2.5 rounded-xl text-xs" onclick="checkAnswer('#ef4444')">빨강</button>
+                <button class="bg-blue-500 text-white font-bold py-2.5 rounded-xl text-xs" onclick="checkAnswer('#3b82f6')">파랑</button>
+                <button class="bg-emerald-500 text-white font-bold py-2.5 rounded-xl text-xs" onclick="checkAnswer('#10b981')">초록</button>
+                <button class="bg-yellow-500 text-black font-bold py-2.5 rounded-xl text-xs" onclick="checkAnswer('#eab308')">노랑</button>
+            </div>
+        `,
+        6: `
+            <h3 class="font-bold text-lg mb-1">🚀 중력 반전 러너</h3>
+            <p class="text-slate-400 text-xs mb-3">캔버스를 클릭하여 상하 중력을 반전시키며 장애물을 피하세요![cite: 6]</p>
+            <div class="bg-slate-900 p-2.5 rounded-lg flex justify-around mb-3 text-xs">
+                <div>점수: <span id="runnerScore" class="text-blue-400 font-bold">0</span></div>
+                <div>최고: <span id="bestRunner">-</span></div>
+            </div>
+            <canvas id="gameCanvas" width="420" height="200" style="background:#0f172a; border-radius:10px; border:1px solid #334155; display:block; margin:0 auto; cursor:pointer;"></canvas>
+        `
+    };
+
+    let activeIntervals = [];
+    function clearAll() {
+        activeIntervals.forEach(id => { clearInterval(id); clearTimeout(id); cancelAnimationFrame(id); });
+        activeIntervals = [];
+    }
+
+    function goLobby() {
+        clearAll();
+        document.getElementById('game-view-container').style.display = 'none';
+        document.getElementById('lobby').style.display = 'block';
+    }
+
+    function loadGame(id) {
+        clearAll();
+        document.getElementById('lobby').style.display = 'none';
+        const view = document.getElementById('game-view-container');
+        const slot = document.getElementById('game-slot');
+        slot.innerHTML = gameTemplates[id];
+        view.style.display = 'flex';
+
+        if(id === 1) initGame1();
+        if(id === 2) initGame2();
+        if(id === 3) initGame3();
+        if(id === 4) initGame4();
+        if(id === 5) initGame5();
+        if(id === 6) initGame6();
+    }
+
+    /* 게임 개별 스크립트 함수 (1~6) */
+    function initGame1() {
+        let startTime, timerId, running = false;
+        const display = document.getElementById('display');
+        const actionBtn = document.getElementById('actionBtn');
+        const result = document.getElementById('result');
+        const bestDisp = document.getElementById('best');
+        let bestDiff = localStorage.getItem('g1_best') ? parseFloat(localStorage.getItem('g1_best')) : null;
+        if(bestDiff !== null) bestDisp.innerText = '±' + bestDiff.toFixed(2) + '초';
+
+        actionBtn.addEventListener('click', () => {
+            if(!running) {
+                running = true; actionBtn.innerText = '스톱!'; result.innerText = '';
+                startTime = performance.now();
+                timerId = setInterval(() => {
+                    let elapsed = (performance.now() - startTime) / 1000;
+                    display.innerText = elapsed >= 3.0 ? '?.??' : elapsed.toFixed(2);
+                }, 30);
+                activeIntervals.push(timerId);
+            } else {
+                running = false; clearInterval(timerId); actionBtn.innerText = '다시 시작';
+                let finalTime = (performance.now() - startTime) / 1000;
+                display.innerText = finalTime.toFixed(2);
+                document.getElementById('current').innerText = finalTime.toFixed(2) + '초';
+                let diff = Math.abs(finalTime - 7.00);
+                if(diff <= 0.15) { result.innerText = `🎉 대성공! 오차: ±${diff.toFixed(2)}초`; result.style.color = '#10b981'; }
+                else { result.innerText = `실패! 오차: ±${diff.toFixed(2)}초`; result.style.color = '#ef4444'; }
+                if(bestDiff === null || diff < bestDiff) {
+                    bestDiff = diff; localStorage.setItem('g1_best', bestDiff);
+                    bestDisp.innerText = '★ ±' + bestDiff.toFixed(2) + '초';
+                }
+            }
+        });
+    }
+
+    function initGame2() {
+        let score = 1, timeLeft = 15.0, isPlaying = false, timerInterval;
+        const grid = document.getElementById('grid');
+        const startBtn = document.getElementById('startBtn');
+        const timerDisp = document.getElementById('timer');
+        const scoreDisp = document.getElementById('currentScore');
+        const bestDisp = document.getElementById('bestScore');
+        let best = localStorage.getItem('g2_best') ? parseInt(localStorage.getItem('g2_best')) : 1;
+        bestDisp.innerText = best;
+
+        function generateRound() {
+            grid.innerHTML = '';
+            let size = Math.min(2 + Math.floor(score / 3), 5);
+            grid.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
+            let baseR = Math.floor(Math.random() * 180) + 40;
+            let baseG = Math.floor(Math.random() * 180) + 40;
+            let baseB = Math.floor(Math.random() * 180) + 40;
+            let diff = Math.max(35 - score * 1.5, 3);
+            let spyR = baseR + (Math.random() > 0.5 ? diff : -diff);
+            let spyG = baseG + (Math.random() > 0.5 ? diff : -diff);
+            let spyB = baseB + (Math.random() > 0.5 ? diff : -diff);
+            let totalTiles = size * size, spyIndex = Math.floor(Math.random() * totalTiles);
+            
+            for(let i=0; i<totalTiles; i++) {
+                let tile = document.createElement('div');
+                tile.style.borderRadius = '4px'; tile.style.cursor = 'pointer';
+                if(i === spyIndex) {
+                    tile.style.backgroundColor = `rgb(${spyR}, ${spyG}, ${spyB})`;
+                    tile.addEventListener('click', () => {
+                        if(!isPlaying) return;
+                        score++; scoreDisp.innerText = score;
+                        timeLeft = Math.min(timeLeft + 2, 15); generateRound();
+                    });
+                } else {
+                    tile.style.backgroundColor = `rgb(${baseR}, ${baseG}, ${baseB})`;
+                    tile.addEventListener('click', () => { if(isPlaying) timeLeft = Math.max(timeLeft - 2, 0); });
+                }
+                grid.appendChild(tile);
+            }
+        }
+
+        startBtn.addEventListener('click', () => {
+            if(isPlaying) return;
+            isPlaying = true; score = 1; timeLeft = 15.0;
+            scoreDisp.innerText = score; startBtn.style.display = 'none'; generateRound();
+            timerInterval = setInterval(() => {
+                timeLeft -= 0.1;
+                if(timeLeft <= 0) {
+                    timeLeft = 0; clearInterval(timerInterval); isPlaying = false;
+                    grid.innerHTML = '<div style="grid-column: 1/-1; display:flex; align-items:center; justify-content:center; font-size:1.1rem; font-weight:bold; color:#ef4444">Game Over!</div>';
+                    startBtn.style.display = 'block'; startBtn.innerText = '재도전';
+                    if(score > best) { best = score; localStorage.setItem('g2_best', best); bestDisp.innerText = best; }
+                }
+                timerDisp.innerText = timeLeft.toFixed(1) + 's';
+            }, 100);
+            activeIntervals.push(timerInterval);
+        });
+    }
+
+    function initGame3() {
+        let pointerPos = 0, direction = 1, speed = 4, combo = 0, targetLeft = 120, targetWidth = 35, animId;
+        const pointer = document.getElementById('pointer');
+        const targetZone = document.getElementById('targetZone');
+        const comboDisp = document.getElementById('combo');
+        const bestDisp = document.getElementById('bestCombo');
+        const hitBtn = document.getElementById('hitBtn');
+        const status = document.getElementById('status');
+        let best = localStorage.getItem('g3_best') ? parseInt(localStorage.getItem('g3_best')) : 0;
+        bestDisp.innerText = best;
+
+        function update() {
+            let container = document.getElementById('barContainer');
+            if(!container) return;
+            let maxLeft = container.clientWidth - 5;
+            pointerPos += direction * speed;
+            if(pointerPos >= maxLeft) { pointerPos = maxLeft; direction = -1; }
+            if(pointerPos <= 0) { pointerPos = 0; direction = 1; }
+            pointer.style.left = pointerPos + 'px';
+            animId = requestAnimationFrame(update);
+            activeIntervals.push(animId);
+        }
+        function resetTarget() {
+            let container = document.getElementById('barContainer');
+            if(!container) return;
+            targetWidth = Math.max(40 - combo * 1.5, 10);
+            targetLeft = Math.random() * (container.clientWidth - targetWidth - 20) + 10;
+            targetZone.style.width = targetWidth + 'px';
+            targetZone.style.left = targetLeft + 'px';
+            speed = 4 + (combo * 0.4);
+        }
+        function triggerHit() {
+            if(pointerPos >= targetLeft && pointerPos <= (targetLeft + targetWidth)) {
+                combo++; status.innerText = '🎯 CRITICAL!'; status.style.color = '#10b981';
+                if(combo > best) { best = combo; localStorage.setItem('g3_best', best); bestDisp.innerText = best; }
+            } else {
+                combo = 0; status.innerText = '💥 MISS!'; status.style.color = '#ef4444';
+            }
+            comboDisp.innerText = combo; resetTarget();
+        }
+        hitBtn.addEventListener('click', triggerHit);
+        setTimeout(() => { resetTarget(); update(); }, 100);
+    }
+
+    function initGame4() {
+        const gameBox = document.getElementById('gameBox');
+        const startArea = document.getElementById('startArea');
+        const player = document.getElementById('player');
+        const timeDisp = document.getElementById('liveTime');
+        const bestDisp = document.getElementById('bestTime');
+        let active = false, startTime, bullets = [], loopId, bTimer = 0, gameTicker;
+        let best = localStorage.getItem('g4_best') ? parseFloat(localStorage.getItem('g4_best')) : 0;
+        bestDisp.innerText = best.toFixed(1) + '초';
+
+        startArea.addEventListener('mouseenter', () => {
+            if(active) return;
+            active = true; startTime = performance.now(); bullets = [];
+            startArea.style.display = 'none'; player.style.display = 'block';
+        });
+        gameBox.addEventListener('mousemove', (e) => {
+            if(!active) return;
+            let rect = gameBox.getBoundingClientRect();
+            let x = e.clientX - rect.left, y = e.clientY - rect.top;
+            player.style.left = x + 'px'; player.style.top = y + 'px';
+            if(x < 0 || x > rect.width || y < 0 || y > rect.height) endGame();
+        });
+        function spawnBullet() {
+            let rect = gameBox.getBoundingClientRect();
+            let side = Math.floor(Math.random() * 4);
+            let x, y, vx, vy;
+            if(side===0) { x=0; y=Math.random()*rect.height; vx=Math.random()*3+1; vy=Math.random()*4-2; }
+            else if(side===1) { x=rect.width; y=Math.random()*rect.height; vx=-(Math.random()*3+1); vy=Math.random()*4-2; }
+            else if(side===2) { x=Math.random()*rect.width; y=0; vx=Math.random()*4-2; vy=Math.random()*3+1; }
+            else { x=Math.random()*rect.width; y=rect.height; vx=Math.random()*4-2; vy=-(Math.random()*3+1); }
+            let el = document.createElement('div');
+            el.style.cssText = `position:absolute; width:8px; height:8px; background:#ef4444; border-radius:50%; left:${x}px; top:${y}px;`;
+            gameBox.appendChild(el);
+            bullets.push({ el, x, y, vx, vy });
+        }
+        function gameLoop() {
+            if(!active) return;
+            let rect = gameBox.getBoundingClientRect();
+            let curTime = (performance.now() - startTime) / 1000;
+            timeDisp.innerText = curTime.toFixed(1) + '초';
+            bTimer++;
+            if(bTimer % Math.max(3, 15 - Math.floor(curTime)) === 0) spawnBullet();
+            let px = parseFloat(player.style.left), py = parseFloat(player.style.top);
+            for(let i=bullets.length-1; i>=0; i--) {
+                let b = bullets[i];
+                b.x += b.vx; b.y += b.
