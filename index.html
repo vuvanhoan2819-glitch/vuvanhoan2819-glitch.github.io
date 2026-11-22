@@ -94,3 +94,7 @@ body:after{opacity:.07;background-size:103px 103px,157px 157px}
 
 
 
+
+<script>
+document.addEventListener('click',function(event){const musicCard=event.target.closest('button.card.music');if(!musicCard)return;event.preventDefault();event.stopImmediatePropagation();window.location.assign('./music.html');},true);
+</script>
